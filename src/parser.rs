@@ -11,7 +11,7 @@ use nom::{
 // Here are the different node types. You will use these to make your parser and your grammar.
 // You may add other nodes as you see fit, but these are expected by the runtime.
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Node {
   Program { children: Vec<Node> },
   Statement { children: Vec<Node> },
@@ -19,9 +19,10 @@ pub enum Node {
   FunctionDefine { children: Vec<Node> },
   Expression { children: Vec<Node> },
   MathExpression { children: Vec<Node> },
-  FunctionCall { children: Vec<Node> },
+  FunctionCall { name: String, children: Vec<Node> },
   VariableDefine { children: Vec<Node> },
   Number { value: i32 },
+  Bool { value: bool },
   Identifier { value: String },
 }
 
