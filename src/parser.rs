@@ -158,6 +158,6 @@ pub fn comment(input: &str) -> IResult<&str, Node> {
 // is defined as at least one function definition, but maybe more. Start
 // by looking up the many1() combinator and that should get you started.
 pub fn program(input: &str) -> IResult<&str, Node> {
-  let (input, result) = many1(alt((function_definition, statement, expression)))(input)?;  // Now that we've defined a number and an identifier, we can compose them using more combinators. Here we use the "alt" combinator to propose a choice.
-  Ok((input, Node::Program{ children: result}))       // Whether the result is an identifier or a number, we attach that to the program
+  let (input, result) = alt((number, identifier))(input)?;  // Now that we've defined a number and an identifier, we can compose them using more combinators. Here we use the "alt" combinator to propose a choice.
+  Ok((input, Node::Program{ children: vec![result]}))       // Whether the result is an identifier or a number, we attach that to the program
 }
