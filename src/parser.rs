@@ -46,20 +46,20 @@ pub fn number(input: &str) -> IResult<&str, Node> {
 }
 
 pub fn boolean(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 pub fn string(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 pub fn function_call(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")  
+  unimplemented!();
 }
 
 // Math expressions with parens (1 * (2 + 3))
 pub fn parenthetical_expression(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 pub fn l4(input: &str) -> IResult<&str, Node> {
@@ -67,19 +67,19 @@ pub fn l4(input: &str) -> IResult<&str, Node> {
 }
 
 pub fn l3_infix(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 pub fn l3(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 pub fn l2_infix(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 pub fn l2(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 // L1 - L4 handle order of operations for math expressions 
@@ -113,15 +113,15 @@ pub fn math_expression(input: &str) -> IResult<&str, Node> {
 }
 
 pub fn expression(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented") 
+  unimplemented!();
 }
 
 pub fn statement(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")  
+  unimplemented!();
 }
 
 pub fn function_return(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 // Define a statement of the form
@@ -137,20 +137,20 @@ pub fn variable_define(input: &str) -> IResult<&str, Node> {
 }
 
 pub fn arguments(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 // Like the first argument but with a comma in front
 pub fn other_arg(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented")
+  unimplemented!();
 }
 
 pub fn function_definition(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented") 
+  unimplemented!();
 }
 
 pub fn comment(input: &str) -> IResult<&str, Node> {
-  Err("Unimplemented") 
+  unimplemented!();
 }
 
 // Define a program. You will change this, this is just here for example.
