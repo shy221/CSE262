@@ -10,6 +10,7 @@ macro_rules! test {
     fn $func() -> Result<(),nom::Err<(&'static str, nom::error::ErrorKind)>> {
       match program($test) {
         Ok((input, p)) => {
+          assert_eq!(input, "");
           assert_eq!(run(&p), $expected);
           Ok(())
         },
