@@ -45,6 +45,114 @@ pub fn number(input: &str) -> IResult<&str, Node> {
   Ok((input, Node::Number{ value: number}))                 // Return the now partially consumed input with a number as well
 }
 
+pub fn boolean(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+pub fn string(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+pub fn function_call(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")  
+}
+
+// Math expressions with parens (1 * (2 + 3))
+pub fn parenthetical_expression(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+pub fn l4(input: &str) -> IResult<&str, Node> {
+  alt((function_call, number, identifier, parenthetical_expression))(input)
+}
+
+pub fn l3_infix(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+pub fn l3(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+pub fn l2_infix(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+pub fn l2(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+// L1 - L4 handle order of operations for math expressions 
+pub fn l1_infix(input: &str) -> IResult<&str, Node> {
+  let (input, _) = many0(tag(" "))(input)?;
+  let (input, op) = alt((tag("+"),tag("-")))(input)?;
+  let (input, _) = many0(tag(" "))(input)?;
+  let (input, args) = l2(input)?;
+  Ok((input, Node::MathExpression{name: op.to_string(), children: vec![args]}))
+
+}
+
+pub fn l1(input: &str) -> IResult<&str, Node> {
+  let (input, mut head) = l2(input)?;
+  let (input, tail) = many0(l1_infix)(input)?;
+  for n in tail {
+    match n {
+      Node::MathExpression{name, mut children} => {
+        let mut new_children = vec![head.clone()];
+        new_children.append(&mut children);
+        head = Node::MathExpression{name, children: new_children};
+      }
+      _ => () 
+    };
+  }
+  Ok((input, head))
+}
+
+pub fn math_expression(input: &str) -> IResult<&str, Node> {
+  l1(input)
+}
+
+pub fn expression(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented") 
+}
+
+pub fn statement(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")  
+}
+
+pub fn function_return(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+// Define a statement of the form
+// let x = expression
+pub fn variable_define(input: &str) -> IResult<&str, Node> {
+  let (input, _) = tag("let ")(input)?;
+  let (input, variable) = identifier(input)?;
+  let (input, _) = many0(tag(" "))(input)?;
+  let (input, _) = tag("=")(input)?;
+  let (input, _) = many0(tag(" "))(input)?;
+  let (input, expression) = expression(input)?;
+  Ok((input, Node::VariableDefine{ children: vec![variable, expression]}))   
+}
+
+pub fn arguments(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+// Like the first argument but with a comma in front
+pub fn other_arg(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented")
+}
+
+pub fn function_definition(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented") 
+}
+
+pub fn comment(input: &str) -> IResult<&str, Node> {
+  Err("Unimplemented") 
+}
+
 // Define a program. You will change this, this is just here for example.
 // You'll probably want to modify this by changing it to be that a program
 // is defined as at least one function definition, but maybe more. Start
