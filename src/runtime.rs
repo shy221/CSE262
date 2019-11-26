@@ -176,7 +176,6 @@ impl Runtime {
         Ok(Value::Bool(*value))
       }
       _ => {
-        println!("{:?}", node);
         Err("Unhandled Node")
       },
     }
@@ -187,7 +186,6 @@ impl Runtime {
 pub fn run(node: &Node) -> Result<Value, &'static str> {
   let mut runtime = Runtime::new();
   runtime.run(node);
-  println!("{:?}\n{:?}", runtime.stack, runtime.functions);
   let start_main = Node::FunctionCall{name: "main".to_string(), children: vec![]};
   runtime.run(&start_main)
 }
