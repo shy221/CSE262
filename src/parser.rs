@@ -5,6 +5,9 @@
 use nom::{
   IResult,
   branch::alt,
+  combinator::opt,
+  multi::{many1, many0},
+  bytes::complete::{tag},
   character::complete::{alphanumeric1, digit1},
 };
 
@@ -17,13 +20,16 @@ pub enum Node {
   Statement { children: Vec<Node> },
   FunctionReturn { children: Vec<Node> },
   FunctionDefine { children: Vec<Node> },
+  FunctionArguments { children: Vec<Node> },
+  FunctionStatements { children: Vec<Node> },
   Expression { children: Vec<Node> },
-  MathExpression { children: Vec<Node> },
+  MathExpression {name: String, children: Vec<Node> },
   FunctionCall { name: String, children: Vec<Node> },
   VariableDefine { children: Vec<Node> },
   Number { value: i32 },
   Bool { value: bool },
   Identifier { value: String },
+  String { value: String },
 }
 
 // Define production rules for an identifier

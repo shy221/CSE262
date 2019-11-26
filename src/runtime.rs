@@ -31,24 +31,85 @@ impl Runtime {
             Node::FunctionDefine{..} => {
               self.run(n);
             },
+            Node::Expression{..} => {
+              self.functions.insert("main".to_string(), vec![Node::FunctionReturn{children: vec![n.clone()]}]);
+            },
+            Node::Statement{..} => {
+              self.functions.insert("main".to_string(), vec![n.clone()]);
+            }
             _ => (),
           }
         }
-        Err("Program")
+        Ok(Value::Bool(true))
+      },
+      Node::MathExpression{name, children} => {
+        match (self.run(&children[0]), self.run(&children[1])) {
+          (Ok(Value::Number(lhs)), Ok(Value::Number(rhs))) => {
+            match name.as_ref() {
+              "+" => Ok(Value::Number(lhs + rhs)),
+              "-" => Ok(Value::Number(lhs - rhs)),
+              "*" => Ok(Value::Number(lhs * rhs)),
+              "/" => Ok(Value::Number(lhs / rhs)),
+              "^" => {
+                let mut result = 1;
+                for i in 0..rhs {
+                  result = result * lhs;
+                }
+                Ok(Value::Number(result))
+              },
+              _ => Err("Undefined operator"),
+            }
+          }
+          _ => Err("Cannot do math on String or Bool"),
+        }
       },
       Node::FunctionCall{name, children} => {
-        self.stack.push(HashMap::new());
+        let in_args = if children.len() > 0 {
+          match &children[0] {
+            Node::FunctionArguments{children} => {
+              children
+            },
+            _ => children,
+          }
+        } else {
+          children
+        };
+        let mut new_frame = HashMap::new();
         let mut result: Result<Value, &'static str> = Err("Undefined function");
+        let rt = self as *mut Runtime;
         match self.functions.get(name) {
           Some(statements) => {
-            println!("{:?}", statements);
+            {
+              match statements[0].clone() {
+                Node::FunctionArguments{children} => {
+                  for (ix, arg) in children.iter().enumerate() {
+                    unsafe {
+                      let result = (*rt).run(&in_args[ix])?;
+                      match arg {
+                        Node::Expression{children} => {
+                          match &children[0] {
+                            Node::Identifier{value} => {
+                              new_frame.insert(value.clone(),result);
+                            },
+                            _ => (),
+                          }
+                        }
+                        _ => (),
+                      }
+                    }
+                  }
+                }
+                _ => (),
+              }     
+            }  
+            self.stack.push(new_frame);
             for n in statements.clone() {
               result = self.run(&n);
             }
+            self.stack.pop();
           },
           None => (),
         };
-        self.stack.pop();
         result
       },
       Node::FunctionDefine{children} => {
@@ -59,7 +120,7 @@ impl Runtime {
           },
           _ => (),
         }
-        Err("Function Define")
+        Ok(Value::Bool(true))
       },
       Node::FunctionReturn{children} => {
         self.run(&children[0])
@@ -87,7 +148,7 @@ impl Runtime {
           _ => "".to_string(),
         };
         // Expression result
-        let value = self.run(&children[1]).unwrap();
+        let value = self.run(&children[1])?;
         let last = self.stack.len() - 1;
         self.stack[last].insert(name, value.clone());
         Ok(value)
@@ -96,6 +157,9 @@ impl Runtime {
         match children[0] {
           Node::MathExpression{..} |
           Node::Number{..} |
+          Node::FunctionCall{..} |
+          Node::String{..} |
+          Node::Bool{..} |
           Node::Identifier{..} => {
             self.run(&children[0])
           },
@@ -105,12 +169,15 @@ impl Runtime {
       Node::Number{value} => {
         Ok(Value::Number(*value))
       }
+      Node::String{value} => {
+        Ok(Value::String(value.clone()))
+      }
       Node::Bool{value} => {
         Ok(Value::Bool(*value))
       }
       _ => {
         println!("{:?}", node);
-        Err("Unhandled Nodee")
+        Err("Unhandled Node")
       },
     }
   }
@@ -119,7 +186,7 @@ impl Runtime {
 
 pub fn run(node: &Node) -> Result<Value, &'static str> {
   let mut runtime = Runtime::new();
-  runtime.run(node)
+  runtime.run(node);
   println!("{:?}\n{:?}", runtime.stack, runtime.functions);
   let start_main = Node::FunctionCall{name: "main".to_string(), children: vec![]};
   runtime.run(&start_main)
