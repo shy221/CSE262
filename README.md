@@ -131,8 +131,11 @@ pub fn combinator_name(input: &str) -> IResult<&str, Node>
 
 The file defines two other combinators `number()` and `identifier()`. You'll need to write other combinators for the various other nodes in the grammar, and tie them together using the various parser combinators that are included in the nom library. You can find a list of the built-in combinators and what they do [here](https://github.com/Geal/nom/blob/master/doc/choosing_a_combinator.md).
 
+Here is an example combinator in your grammar.
+
+
 The parser is automatically tested in `tests/parser.rs`. There are 28 different statements in the language and their expected output from the runtime. In order to get full credit, you'll need to pass all 28 tests.
 
 ### Grammar
 
-Along with the parser you should write an ebnf grammar for the language in `/grammar.ebnf`. Use the EBNF format. Note, if you do this correctly, you'll find the EBNF grammar maps almost 1:1 with the parer combinators you'll write. Furthermore, the semantics of EBNF (such as optional nodes, repeated nodes, choice nodes, etc.) map directly to combinators provided by `nom`. You'll find even more options in the linked reference.
+Along with the parser you should write an ebnf grammar for the language in `/grammar.ebnf`. This file already contains the nodes in the grammar you need to implement. Use the EBNF format. Note, if you do this correctly, you'll find the EBNF grammar maps almost 1:1 with the parer combinators you'll write. Furthermore, the semantics of EBNF (such as optional nodes, repeated nodes, choice nodes, etc.) map directly to combinators provided by `nom`. You'll find even more options in the linked reference.
