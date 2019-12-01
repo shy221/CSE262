@@ -133,6 +133,17 @@ The file defines two other combinators `number()` and `identifier()`. You'll nee
 
 Here is an example combinator in your grammar.
 
+```rust
+pub fn variable_define(input: &str) -> IResult<&str, Node> {
+  let (input, _) = tag("let ")(input)?;
+  let (input, variable) = identifier(input)?;
+  let (input, _) = many0(tag(" "))(input)?;
+  let (input, _) = tag("=")(input)?;
+  let (input, _) = many0(tag(" "))(input)?;
+  let (input, expression) = expression(input)?;
+  Ok((input, Node::VariableDefine{ children: vec![variable, expression]}))   
+}
+```
 
 The parser is automatically tested in `tests/parser.rs`. There are 28 different statements in the language and their expected output from the runtime. In order to get full credit, you'll need to pass all 28 tests.
 
